@@ -271,4 +271,31 @@ function detectBrowser() {
 browserVersion = detectBrowser();
 isAndroid = navigator.userAgent.indexOf('Android') != -1;
 
+var forceChrome = window.config.forceChrome;
+var forceFirefox = window.config.forceFirefox;
+var unsupported = false;
+
+if (forceChrome
+    && RTCBrowserType.isChrome() && browserVersion >= forceChrome) {
+    unsupported = false;
+} else if (forceFirefox
+    && RTCBrowserType.isFirefox() && browserVersion >= forceFirefox) {
+    unsupported = false;
+} else if (forceChrome || forceFirefox) {
+    unsupported = true;
+}
+
+if (unsupported) {
+    if (forceChrome) {
+        console.warn(
+            "We only support Chrome/Chromium " + forceChrome + "+ !!!");
+    }
+    if (forceFirefox) {
+        console.warn(
+            "We only support Firefox " + forceFirefox + "+ !!!");
+    }
+    document.location.href =
+        "/unsupported_browser.html?referrer=" + document.location.href;
+}
+
 module.exports = RTCBrowserType;
