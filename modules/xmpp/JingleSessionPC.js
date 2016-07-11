@@ -792,6 +792,13 @@ JingleSessionPC.prototype._modifySources = function (successCallback, queueCallb
                 XMPPEvents.REMOTE_UFRAG_CHANGED, ufrag);
     }
 
+    if (this.room.options.bandwidthLimit) {
+        sdp.raw = sdp.raw.replace('a=rtpmap:100 VP8/90000', 'a=rtpmap:100 VP8/90000\r\na=fmtp:100 x-google-max-bitrate='+parseInt(this.room.options.bandwidthLimit));
+    }
+    if (this.room.options.forceVP9) {
+        sdp.raw = sdp.raw.replace('a=rtpmap:100 VP8/90000', 'a=rtpmap:100 VP9/90000');
+    }
+
     this.peerconnection.setRemoteDescription(
         new RTCSessionDescription({type: 'offer', sdp: sdp.raw}),
         function() {
